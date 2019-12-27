@@ -1,0 +1,24 @@
+{
+  "name": "bot-mini-jeux",
+  "version": "1.0.0",
+  "description": "mini-games discord bot",
+  "main": "main.js",
+  "dependencies": {
+    "discord": "^0.8.2",
+    "discord.js": "^11.5.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BoBsmil3Y/Bot-Mini-jeux.git"
+  },
+  "author": "BoBsmil3Y",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BoBsmil3Y/Bot-Mini-jeux/issues"
+  },
+  "homepage": "https://github.com/BoBsmil3Y/Bot-Mini-jeux#readme"
+}
