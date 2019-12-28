@@ -1,23 +1,34 @@
 const Discord = require('discord.js');
+const fs = require('fs');
 const configFile = require("./json/config.json");
+
 const client = new Discord.Client();
+client.commands = new Discord.Collection();
+client.miniJeux = new Discord.Collection();
+
 const prefix = configFile.prefix;
-const token = configFile.prefix;
+const token = configFile.token;
+const miniJeuxFolder = fs.readdirSync('./mini-jeux')
+
+
+for (const folder of miniJeuxFolder) {
+    const commandFiles = fs.readdirSync(`./mini-jeux/${folder}`).filter(file => file.endsWith('.js'));
+    for (const file of commandFiles) {
+        const command = require(`./mini-jeux/${folder}/${file}`);
+        client.commands.set(command.name, command);
+        client.miniJeux.set(folder, `Mini jeu : ${folder}`)
+    }
+}
+console.log(client.miniJeux, client.commands)
 
 
 client.on('ready', () => {
 
-  console.log("client lancé");
-  client.user.setActivity("oui");
+    console.log("client lancé");
+    client.user.setActivity("oui");
 
 });
 
-
-client.on('message', msg => {
-    if (msg.content === 'ping') {
-        msg.reply('pong');
-    }
-});
 
 client.on('messageReactionAdd', (reaction, user) => {
     if (user.id === client.user.id) return;
@@ -31,7 +42,7 @@ const events = {
     MESSAGE_REACTION_ADD: "messageReactionAdd",
     MESSAGE_REACTION_REMOVE: "messageReactionRemove"
 };
-  
+
 client.on('raw', async event => {
     if (!events.hasOwnProperty(event.t)) return;
 
