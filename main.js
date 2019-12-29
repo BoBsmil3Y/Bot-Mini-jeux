@@ -1,13 +1,11 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const configFile = require("./json/config.json");
+const { prefix, token } = require("./json/config.json");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.miniJeux = new Discord.Collection();
 
-const prefix = configFile.prefix;
-const token = configFile.token;
 const miniJeuxFolder = fs.readdirSync('./mini-games')
 
 
