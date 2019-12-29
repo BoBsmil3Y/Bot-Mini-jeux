@@ -15,7 +15,7 @@ for (const folder of miniJeuxFolder) {
     const commandFiles = fs.readdirSync(`./mini-games/${folder}`).filter(file => file.endsWith('.js'));
     for (const file of commandFiles) {
         const command = require(`./mini-games/${folder}/${file}`);
-        client.commands.set(command.name, command);
+        client.commands.set(`${folder} ${command.name}`, command);
         client.miniJeux.set(folder, `Mini jeu : ${folder}`)
     }
 }
@@ -27,9 +27,9 @@ client.on('message', msg => {
     if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
     const commande = msg.content.toLowerCase()
-    const args = commande.slice(prefix.length).split(" ")
+    const args = commande.slice(prefix.length)
 
-    const command = client.commands.get(args[1]);
+    const command = client.commands.get(args);
 
     console.log(command)
 
