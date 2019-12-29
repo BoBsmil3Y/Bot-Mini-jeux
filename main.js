@@ -20,12 +20,6 @@ for (const folder of miniJeuxFolder) {
     }
 }
 
-client.commands.set("start", {name: 'debut pendu',
-    description: 'Début du mini-jeu',
-    execute(message, args) {
-    message.channel.send('Début du mini-jeu');
-}})
-
 console.log(client.miniJeux)
 console.log(client.commands)
 
