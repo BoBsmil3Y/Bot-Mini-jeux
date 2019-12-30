@@ -29,10 +29,7 @@ client.on('message', msg => {
 
     const command = client.commands.get(args);
 
-    console.log(command)
-
     try {
-        console.log(`Commandes : ${client.commands}`)
         command.execute(msg, args);
     } catch (error) {
         console.error(error);
