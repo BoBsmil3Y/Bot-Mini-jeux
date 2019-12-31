@@ -9,7 +9,7 @@ client.commands = new Discord.Collection();
 const folders = fs.readdirSync('./games')
 const commandFiles = fs.readdirSync('./games/speedText').filter(file => file.endsWith('.js'));
 
-for (const folder of folders) {
+for (let folder of folders) {
 
     const commandFiles = fs.readdirSync(`./games/${folder}`).filter(file => file.endsWith('.js'));
 
