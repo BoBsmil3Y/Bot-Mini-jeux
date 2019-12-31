@@ -1,39 +1,49 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const configFile = require("./json/config.json");
-
+const { prefix, token } = require("./config.json");
 const client = new Discord.Client();
+
 client.commands = new Discord.Collection();
-client.miniJeux = new Discord.Collection();
-
-const prefix = configFile.prefix;
-const token = configFile.token;
-const miniJeuxFolder = fs.readdirSync('./mini-jeux')
+client.games = new Discord.Collection();
 
 
-for (const folder of miniJeuxFolder) {
-    const commandFiles = fs.readdirSync(`./mini-jeux/${folder}`).filter(file => file.endsWith('.js'));
+let gamesFolder = fs.readdirSync('./mini-games'); //return ['hangedman.js','speedtext.js']
+
+for (let folder of gamesFolder) {
+
+    let commandFiles = fs.readdirSync(`./mini-games/${folder}`).filter(file => file.endsWith('.js'));
+
     for (const file of commandFiles) {
-        const command = require(`./mini-jeux/${folder}/${file}`);
-        client.commands.set(command.name, command);
-        client.miniJeux.set(folder, `Mini jeu : ${folder}`)
+
+        let command = require(`./mini-games/${folder}/${file}`);
+        client.commands.set(`${folder} ${command.name}`, command);
+        client.games.set(folder, `Mini jeu : ${folder}`);
+
     }
 }
-console.log(client.miniJeux, client.commands)
 
+client.on('message', msg => {
+    if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+
+    const args = msg.content.slice(prefix.length).split(/ +/);
+    const command = args.shift().toLowerCase();
+
+    console.log(`Commande : ${command}`);
+    console.log(`${client.commands.get('speedtext')}`);
+    
+    try {
+        client.commands.get(command).execute(msg, args);
+    } catch (error) {
+        console.error(error);
+        msg.reply('there was an error trying to execute that command!');
+    }
+
+});
 
 client.on('ready', () => {
 
     console.log("client lancé");
-    client.user.setActivity("oui");
-
-});
-
-client.on('messageReactionAdd', (reaction, user) => {
-    if (user.id === client.user.id) return;
-
-    let commandFile = require(`./handler/reactionIdea.js`);
-    commandFile.run(l, Discord, client, reaction, user);
+    client.user.setActivity("lancé par BoB");
 
 });
 

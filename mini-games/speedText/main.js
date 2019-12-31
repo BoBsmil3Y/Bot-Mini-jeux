@@ -1,7 +1,7 @@
 module.exports = {
-	name: 'ping',
-	description: 'Ping!',
+	name: 'speedtext',
+	description: 'Lance le jeu speed text',
 	execute(message, args) {
-		message.channel.send('Pong.');
+		message.channel.send('Commande réussi.');
 	},
 };
