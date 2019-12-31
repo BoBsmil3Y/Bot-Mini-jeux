@@ -2,42 +2,43 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const { prefix, token } = require("./json/config.json");
 
+
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-client.miniJeux = new Discord.Collection();
 
-const miniJeuxFolder = fs.readdirSync('./mini-games')
+const folders = fs.readdirSync('./games')
+const commandFiles = fs.readdirSync('./games/speedText').filter(file => file.endsWith('.js'));
 
+for (const folder of folders) {
 
-for (const folder of miniJeuxFolder) {
-    const commandFiles = fs.readdirSync(`./mini-games/${folder}`).filter(file => file.endsWith('.js'));
-    for (const file of commandFiles) {
-        const command = require(`./mini-games/${folder}/${file}`);
-        client.commands.set(`${folder} ${command.name}`, command);
-        client.miniJeux.set(folder, `Mini jeu : ${folder}`)
-    }
+    const commandFiles = fs.readdirSync(`./games/${folder}`).filter(file => file.endsWith('.js'));
+
+    const command = require(`./games/${folder}/${commandFiles}`);
+    if (!command.name) break; // If the js file does not contain a command, we don't put it into the collection
+    client.commands.set(command.name, command);
+
 }
 
-console.log(client.miniJeux)
 console.log(client.commands)
+console.log(client.games)
 
-client.on('message', msg => {
-    if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
-    const commande = msg.content.toLowerCase()
-    const args = commande.slice(prefix.length)
 
-    const command = client.commands.get(args);
 
-    console.log(command)
 
-    try {
-        console.log(`Commandes : ${client.commands}`)
-        command.execute(msg, args);
-    } catch (error) {
-        console.error(error);
-        msg.reply('there was an error trying to execute that command!');
-    }
+
+
+client.on('message', message => {
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+	const args = message.content.slice(prefix.length).split(/ +/);
+	const command = args.shift().toLowerCase();
+
+	if (command === 'ping') {
+		message.channel.send('Pong.');
+	} else if (command === 'beep') {
+		message.channel.send('Boop.');
+	}
 
 });
 
