@@ -1,38 +1,39 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const { prefix, token } = require("./config.json");
+const { prefix, token } = require("./json/config.json");
+
 const client = new Discord.Client();
-
 client.commands = new Discord.Collection();
-client.games = new Discord.Collection();
+client.miniJeux = new Discord.Collection();
+
+const miniJeuxFolder = fs.readdirSync('./mini-games')
 
 
-let gamesFolder = fs.readdirSync('./mini-games'); //return ['hangedman.js','speedtext.js']
-
-for (let folder of gamesFolder) {
-
-    let commandFiles = fs.readdirSync(`./mini-games/${folder}`).filter(file => file.endsWith('.js'));
-
+for (const folder of miniJeuxFolder) {
+    const commandFiles = fs.readdirSync(`./mini-games/${folder}`).filter(file => file.endsWith('.js'));
     for (const file of commandFiles) {
-
-        let command = require(`./mini-games/${folder}/${file}`);
+        const command = require(`./mini-games/${folder}/${file}`);
         client.commands.set(`${folder} ${command.name}`, command);
-        client.games.set(folder, `Mini jeu : ${folder}`);
-
+        client.miniJeux.set(folder, `Mini jeu : ${folder}`)
     }
 }
+
+console.log(client.miniJeux)
+console.log(client.commands)
 
 client.on('message', msg => {
     if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
-    const args = msg.content.slice(prefix.length).split(/ +/);
-    const command = args.shift().toLowerCase();
+    const commande = msg.content.toLowerCase()
+    const args = commande.slice(prefix.length)
 
-    console.log(`Commande : ${command}`);
-    console.log(`${client.commands.get('speedtext')}`);
-    
+    const command = client.commands.get(args);
+
+    console.log(command)
+
     try {
-        client.commands.get(command).execute(msg, args);
+        console.log(`Commandes : ${client.commands}`)
+        command.execute(msg, args);
     } catch (error) {
         console.error(error);
         msg.reply('there was an error trying to execute that command!');
