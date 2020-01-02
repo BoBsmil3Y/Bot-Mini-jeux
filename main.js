@@ -6,24 +6,29 @@ const { prefix, token } = require("./json/config.json");
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
-const folders = fs.readdirSync('./games')
-const commandFiles = fs.readdirSync('./games/speedText').filter(file => file.endsWith('.js'));
+//Get all games directory and files with command inside.
+const folders = fs.readdirSync('./games');
 
 for (let folder of folders) {
 
     const commandFiles = fs.readdirSync(`./games/${folder}`).filter(file => file.endsWith('.js'));
 
-    const command = require(`./games/${folder}/${commandFiles}`);
-    if (!command.name) break; // If the js file does not contain a command, we don't put it into the collection
-    client.commands.set(command.name, command);
+    for (let commands of commandFiles) {
+        
+        const command = require(`./games/${folder}/${commands}`);
+        if (command.name) client.commands.set(command.name, command); 
 
+    }
+    
 }
 
+//Launching files with appropriate commands
 client.on('message', message => {
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+    
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-	const args = message.content.slice(prefix.length).split(/ +/);
-    const command = args.shift().toLowerCase();
+	const args = message.content.slice(prefix.length).toLowerCase().split(/ +/);
+    const command = args.shift();
 
     if (!client.commands.has(command)) return;
 
@@ -33,7 +38,6 @@ client.on('message', message => {
         console.error(error);
         message.reply('there was an error trying to execute that command!');
     }
-
 
 });
 

@@ -8,14 +8,15 @@ module.exports = {
 
 		let player = m.author;
 		let channel = m.channel;
-		let text = '';
 
 		axios.get('https://baconipsum.com/api/?type=meat-and-filler&paras=2&format=text')
 		.then(response => {
-			channel.send(response.data).await
+			channel.send(response.data) // .await
 		})
 		.catch(error => {
 			console.log(error);
+			channel.send("Une erreur s'est produite en récupérant le texte. Veuillez en informer le staff.")
+			.then(m => m.delete(5000));
 		});
 
 		/*channel.awaitMessages((mes => mes.author.id === player.id), { max: 1, time: 60000})
